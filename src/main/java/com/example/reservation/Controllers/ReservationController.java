@@ -40,4 +40,9 @@ public class ReservationController {
     public Reservation getReservationById(@RequestParam("Date") Date date){
         return  iReservationService.getReservationParAnneeUniversitaire(date);
     }
+    @PostMapping("/ajouterReservation")
+    public Reservation ajouterReservation(@RequestParam("idchambre") long idChambre, @RequestParam("cinEtudiant") long cinEtudiant){
+        return  iReservationService.ajouterReservation(idChambre,cinEtudiant);
+    }
+
 }

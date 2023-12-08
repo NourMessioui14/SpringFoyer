@@ -62,54 +62,43 @@ public class IReservationServiceImp implements IReservationService{
 
     @Override
     public Reservation ajouterReservation(long idChambre, long cinEtudiant) {
-        LocalDate startDate =  LocalDate.of(LocalDate.now().getYear()
-                ,LocalDate.now().getMonth()
-                ,LocalDate.now().getDayOfMonth());
-
-
-        LocalDate finDate =  LocalDate.of(LocalDate.now().getYear()
-                ,LocalDate.now().getMonth()
-                ,LocalDate.now().getDayOfMonth());
-
-
-
-        Assert.isTrue(reservationRepository.existsByEtudiantsCinAndAnneeUniversitaireBetween(cinEtudiant,startDate,finDate),"you have a reservation");
 
         Chambre chambre = chambreRepository.findById(idChambre)
                 .orElseThrow(() -> new ChambreNotFoundException("universite not found"));
-        Etudiant etudiant = etudiantRepository.findByCin(cinEtudiant)
-                .orElseThrow(()-> new EtudiantNotFoundException("etudiant not found"));
-        String id = chambre.getNumeroChambre()+"-"+chambre.getBlocs().getNomBloc()+"-"+ LocalDate.now().getYear();
-        Reservation reservation = reservationRepository.findById(id).orElse(
-                Reservation.builder().
-                        idReservation(id)
-                        .anneeUniversitaire(LocalDate.now())
-                        .estValide(true)
-                        .etudiants(new ArrayList<Etudiant>()).build()
+        Etudiant etudiant = etudiantRepository.findByCin(cinEtudiant);
+        String id = chambre.getNumeroChambre() + "-" + chambre.getBlocs().getNomBloc() + "-" + LocalDate.now().getYear();
+        Reservation reservation = new Reservation();
+        reservation.setIdReservation(id);
 
-                );
-        Assert.isTrue(reservation.isEstValide(),"room not valid");
-        reservation.getEtudiants().add(etudiant);
+        reservation.setChambre(chambre);
+        reservation.setEstValide(true);
+        reservation.setAnneeUniversitaire(LocalDate.now());
+//        reservation.getEtudiants().add(etudiant);
+        List<Etudiant> lsAux = new ArrayList<Etudiant>();
+        lsAux.add(etudiant);
+        reservation.setEtudiants(lsAux);
 
-        if(!chambre.getReservations().contains(reservation)){
+        int maxCapacity;
+        switch (chambre.getTypeChambre()) {
+            case SIMPLE:
+                maxCapacity = 1;
+                break;
+            case DOUBLE:
+                maxCapacity = 2;
+                break;
+            case TRIPLE:
+                maxCapacity = 3;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown TypeChambre");
+        }
+        int currentReservations = chambre.getReservations().size();
+        if (currentReservations < maxCapacity) {
             reservationRepository.save(reservation);
-            chambre.getReservations().add(reservation);
         }
-        switch (chambre.getTypeChambre()){
-            case SIMPLE -> reservation.setEstValide(false);
-            case DOUBLE -> {
-                if (reservation.getEtudiants().size()==2){
-                reservation.setEstValide(false); }
-                            }
-            case TRIPLE -> {
-                if (reservation.getEtudiants().size()==3){
-                    reservation.setEstValide(false); }
-                            }
-        }
-
         return reservation;
-
     }
+
 
     @Override
     public Reservation getReservationParAnneeUniversitaire(Date date) {

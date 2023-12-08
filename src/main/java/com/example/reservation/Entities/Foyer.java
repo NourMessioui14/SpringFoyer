@@ -1,5 +1,6 @@
 package com.example.reservation.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,8 +24,8 @@ public class Foyer {
     @OneToOne(mappedBy = "foyers",cascade = CascadeType.ALL)
     @JsonIgnore
     private Universite universite;
-
-    @OneToMany(mappedBy = "foyers",cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToMany(mappedBy = "foyers",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set <Bloc> blocs;
 
 

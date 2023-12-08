@@ -3,17 +3,21 @@ package com.example.reservation.Controllers;
 import com.example.reservation.Entities.Bloc;
 import com.example.reservation.Repositories.BlocRepository;
 import com.example.reservation.Services.IBlocService;
+import io.swagger.v3.oas.annotations.media.PatternProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("bloc")
+@Slf4j
 public class BlocController {
     private final IBlocService iBlocService;
     @GetMapping
@@ -48,5 +52,10 @@ public class BlocController {
             // Handle the exception appropriately
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @GetMapping("{date}")
+    public void dateTest(@PathVariable LocalDate date){
+        log.info(String.valueOf(date));
     }
 }

@@ -1,5 +1,9 @@
 package com.example.reservation.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,6 +20,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Builder
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idReservation")
+
 public class Reservation {
     @Id
     private String idReservation;
@@ -23,8 +29,13 @@ public class Reservation {
     private LocalDate anneeUniversitaire;
     private boolean estValide;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     List<Etudiant> etudiants;
+
+    @ManyToOne
+    @JoinColumn(name = "chambre_id")
+    private Chambre chambre;
+
 
 
 

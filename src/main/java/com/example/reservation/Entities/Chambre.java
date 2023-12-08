@@ -1,8 +1,7 @@
 package com.example.reservation.Entities;
 
 import com.example.reservation.Entities.Enumeration.TypeChambre;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +14,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idChambre")
+
 public class Chambre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +30,7 @@ public class Chambre {
 
     private Bloc blocs;
 
-    @OneToMany
+    @OneToMany(mappedBy = "chambre")
     private Set<Reservation> reservations;
 
 

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,6 +24,6 @@ public class Bloc implements Serializable {
     private Foyer foyers;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "blocs")
-    private Set<Chambre> chambres;
+    private List<Chambre> chambres;
 
 }
